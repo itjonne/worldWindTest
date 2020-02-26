@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 /**
- * Illustrates how to build a basic WorldWind globe.
+ * Illustrates how to use a GoToAnimator to smoothly move the view to a new location. This example listens for
+ * terrain picks and moves the view to the location picked.
  */
 requirejs(['./WorldWindShim',
         './LayerManager'],
@@ -33,11 +34,7 @@ requirejs(['./WorldWindShim',
         var layers = [
             // Imagery layers.
             {layer: new WorldWind.BMNGLayer(), enabled: true},
-            {layer: new WorldWind.BMNGLandsatLayer(), enabled: false},
-            {layer: new WorldWind.BingAerialLayer(null), enabled: false},
             {layer: new WorldWind.BingAerialWithLabelsLayer(null), enabled: true},
-            {layer: new WorldWind.BingRoadsLayer(null), enabled: false},
-            {layer: new WorldWind.OpenStreetMapImageLayer(null), enabled: false},
             // Add atmosphere layer on top of all base layers.
             {layer: new WorldWind.AtmosphereLayer(), enabled: true},
             // WorldWindow UI layers.
@@ -50,6 +47,31 @@ requirejs(['./WorldWindShim',
             layers[l].layer.enabled = layers[l].enabled;
             wwd.addLayer(layers[l].layer);
         }
+
+        // Now set up to handle clicks and taps.
+
+        // The common gesture-handling function.
+        var handleClick = function (recognizer) {
+            // Obtain the event location.
+            var x = recognizer.clientX,
+                y = recognizer.clientY;
+
+            // Perform the pick. Must first convert from window coordinates to canvas coordinates, which are
+            // relative to the upper left corner of the canvas rather than the upper left corner of the page.
+            var pickList = wwd.pick(wwd.canvasCoordinates(x, y));
+
+            // If only one thing is picked and it is the terrain, tell the WorldWindow to go to the picked location.
+            if (pickList.objects.length === 1 && pickList.objects[0].isTerrain) {
+                var position = pickList.objects[0].position;
+                wwd.goTo(new WorldWind.Location(position.latitude, position.longitude));
+            }
+        };
+
+        // Listen for mouse clicks.
+        var clickRecognizer = new WorldWind.ClickRecognizer(wwd, handleClick);
+
+        // Listen for taps on mobile devices.
+        var tapRecognizer = new WorldWind.TapRecognizer(wwd, handleClick);
 
         // Create a layer manager for controlling layer visibility.
         var layerManager = new LayerManager(wwd);
