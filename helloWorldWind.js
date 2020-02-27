@@ -23,7 +23,8 @@ function myCallback() {
         if (err) {
             msg = err;
         } else {
-            msg = "Oot nyt " + code.toUpperCase() + " päällä.";
+            if (code == "fi") msg = "Täällä on pelkkiä hörhöjä, kuule!";
+            else msg = "Oot nyt " + code.toUpperCase() + " päällä.";
         }
         console.log(msg)
 
