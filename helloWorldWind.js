@@ -5,16 +5,14 @@ let grid = codegrid.CodeGrid();
 
 
 
-let ccd = new WorldWind.CoordinatesDisplayLayer(wwd);
+//let ccd = new WorldWind.CoordinatesDisplayLayer(wwd);
 wwd.addLayer(new WorldWind.BMNGOneImageLayer());
-wwd.addLayer(new WorldWind.CompassLayer());
-wwd.addLayer(ccd);
-wwd.addLayer(new WorldWind.ViewControlsLayer(wwd));
+//wwd.addLayer(ccd);
 
 let position = wwd.navigator.lookAtLocation;
 //onmousemove = function(e){console.log("mouse location:", e.clientX, e.clientY)}
 
-var intervalID = window.setInterval(myCallback, 2000);
+var intervalID = window.setInterval(myCallback, 100);
 
 function myCallback() {
     let msg;
